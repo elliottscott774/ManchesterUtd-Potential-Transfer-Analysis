@@ -11,5 +11,3 @@ dependencies:
     - vaderSentiment
     - plotly==5.19.0
     - matplotlib
-    # - scikit-learn
-    # - seaborn
