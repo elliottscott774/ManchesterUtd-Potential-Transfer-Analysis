@@ -16,13 +16,13 @@ REMOTE_DATA = 'players.csv'
 # ------------------------------------------------------
 #                        CONFIG
 # ------------------------------------------------------
-load_dotenv()
+
 
 # load Backblaze connection
 # load Backblaze connection
-b2 = B2(endpoint=os.environ['B2_ENDPOINT'],
-        key_id=os.environ['B2_KEYID'],
-        secret_key=os.environ['B2_APPKEY'])
+b2 = B2(endpoint=st.secrets['B2_ENDPOINT'],
+        key_id=st.secrets['B2_KEYID'],
+        secret_key=st.secrets['B2_APPKEY'])
 
 
 # ------------------------------------------------------
@@ -31,7 +31,7 @@ b2 = B2(endpoint=os.environ['B2_ENDPOINT'],
 @st.cache_data
 def get_data():
     # collect data frame of reviews and their sentiment
-    b2.set_bucket(os.environ['B2_BUCKETNAME'])
+    b2.set_bucket(st.secrets['B2_BUCKETNAME'])
     df_players = b2.get_df(REMOTE_DATA)
 
     # average sentiment scores for the whole dataset
