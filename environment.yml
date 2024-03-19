@@ -10,4 +10,3 @@ dependencies:
     - ipykernel
     - vaderSentiment
     - plotly==5.19.0
-    - matplotlib
