@@ -1,0 +1,14 @@
+name: streamlit
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+    - pandas
+    - python-dotenv
+    - streamlit
+    - boto3
+    - ipykernel
+    - vaderSentiment
+    - plotly==5.19.0
+    # - scikit-learn
+    # - seaborn
