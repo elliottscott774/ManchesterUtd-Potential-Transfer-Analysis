@@ -1,6 +1,8 @@
 import os
 import pickle
 import pandas as pd
+import sklearn
+import numpy as np
 
 import streamlit as st
 import altair as alt
@@ -11,7 +13,7 @@ from utils.b2 import B2
 # ------------------------------------------------------
 #                      APP CONSTANTS
 # ------------------------------------------------------
-REMOTE_DATA = 'players.csv'
+
 
 # ------------------------------------------------------
 #                        CONFIG
@@ -30,15 +32,11 @@ b2 = B2(endpoint=os.environ['B2_ENDPOINT'],
 # ------------------------------------------------------
 @st.cache_data
 def get_data():
-    # collect data frame of reviews and their sentiment
     b2.set_bucket(os.environ['B2_BUCKETNAME'])
-    df_players = b2.get_df(REMOTE_DATA)
-
-    # average sentiment scores for the whole dataset
-    benchmarks = df_players[['market_value_in_eur']] \
-                    .agg(['mean', 'median'])
+    transfer_history = b2.get_df('player_transfer_history.csv')
+    player_history = b2.get_df('player_history.csv')
     
-    return df_players, benchmarks
+    return transfer_history, player_history
 
 
 # ------------------------------------------------------
@@ -47,55 +45,103 @@ def get_data():
 # ------------------------------
 # PART 0 : Overview
 # ------------------------------
+transfer_history, player_history = get_data()
+
+
 st.write(
 '''
-# Exercise 1
-Articulate a quantitative question of the data you plan to use in your final project for this class. 
-Build a visualization which addresses this question. For larger datasets, you can feel free to use a subset of the data.
-
-### QUESTION:\n
-**What are the current values of Manchester United players?**
-
-# Exercise 2
-Build and deploy a very simple Streamlit web app with the following:
-
-Your visualization from Exercise 1
-A view of a subset of your data using st.dataframe.
-Try to store (and access) your data using Backblaze.
+# Transfer Recommendation System
+\n\n
+Fans of football debate endlessly on which player(s) their favorite football club should bring to their team. The goal of this system is to 
+recommend potential players based on how they are likely to improve the club.
+\n\n
+Through careful data processing I was able to create a player history data set, which tracks the performance of each player over the years, and a transfer history data set, 
+which tracks the transfers of each player over the years.
+\n\n
+## Player History
 ''')
 
-df_players, benchmarks = get_data()
+st.dataframe(player_history)
+st.write('\n\n# Transfer History ')
+st.dataframe(transfer_history)
+
+st.write(
+'''
+\n\n 
+A model is trained to predict the success of a squad. 
+Every squad from 2013-2022 is compiled and their performances 
+are aggregated to give a performance score. The model is then 
+trained to predict the performance score of the 
+squad. This trained model can then be used to 
+estimate the success of any squad of players. 
+\n\n
+A transfer recommender system is built using this model. The 
+user can input the name of a team and the system will return 
+the top 10 players with the highest score from the model. 
+Multiple models can be trained based on desired performance
+metrics. For example a model could be trained to recommend 
+players that are most likely to improve the team's overall performance, 
+or a model could be trained to recommend players that are 
+most likely to improve the team's attacking performance. 
+Multiple models could be built and polled to give a more 
+nuanced recommendation.
+\n\n
+## Issues
+I am behind in the model building process. A lot of effort 
+was been spent processing the data to be in a format that 
+can be used to train the model. I have a way of constructing
+all team squads and constructing player transfer history.
+\n\n
+I haven't figured out a good way to build a model based on 
+squads however. A squad of players can vary in the 
+number of players and the model needs to be able to handle 
+that. I could simplify the data by using only the top 5 players
+in each position based on appearances. This would make every
+squad the same size, but would be less realistic.
+\n\n
+I also need to figure out a way of scoring the performance of a
+team based on multiple statistics. How do I know which team is best?
+
+## Next Steps
+''')
+st.image('Transfer_Recommender.png')
+
+st.write(
+'''
+The above images are my plans for how I will train the squad
+success prediction model and construct the recommendation system.
+\n\n
+For each season I will aggregate the players for each team.
+\n\n
+Every team will have performance data related to them that I will use to 
+calculate the success of squad. The performance data is data such as 
+games won, games drawn, game lost, goals for, goals against, number of assists,
+clean sheets, and final league position. The squad's success value becomes
+the target value of the prediction model of which the input of is a squad of players
+\n\n
+The recommendation system will be built using the trained model. The user of the app
+selects a team they want player transfer recommendations for. The system constructs this
+squad of players and iteratively adds a player to the squad. This new squad becomes the 
+input into the model. The model will output a score and at the end the top 10 players with
+ the highest score will be returned to the user.
+   
+
+
+
+
+'''
+)
 
 # ------------------------------
 # PART 1 : Filter Data
 # ------------------------------
 
-st.write(
-'''
-Who are the current Manchester United Players?:
-''')
 
-manchester_united_players = df_players[df_players['current_club_name'] == 'Manchester United Football Club']
-current_manchester_united_players = manchester_united_players[manchester_united_players['last_season'] == 2023]
-current_manchester_united_players = pd.DataFrame(current_manchester_united_players)
-current_manchester_united_players = current_manchester_united_players.sort_values(by="market_value_in_eur", ascending = False)
 
-st.dataframe(current_manchester_united_players)
+
 
 
 
 # ------------------------------
 # PART 2 : Plot
 # ------------------------------
-
-st.write(
-'''
-## Visualize
-What are the market values of these players?
-'''
-)
-
-st.write(alt.Chart(current_manchester_united_players).mark_bar().encode(
-    x = alt.X('name', sort = None),
-    y = 'market_value_in_eur',
-))
