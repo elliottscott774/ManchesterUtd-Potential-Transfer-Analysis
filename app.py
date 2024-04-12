@@ -35,8 +35,9 @@ def get_data():
     b2.set_bucket(os.environ['B2_BUCKETNAME'])
     transfer_history = b2.get_df('player_transfer_history.csv')
     player_history = b2.get_df('player_history.csv')
-    
-    return transfer_history, player_history
+    squad_and_performance = b2.get_df('squad_and_performance.csv')
+    squad_history = b2.get_df('squad_history.csv')
+    return transfer_history, player_history, squad_and_performance, squad_history
 
 
 # ------------------------------------------------------
@@ -45,7 +46,7 @@ def get_data():
 # ------------------------------
 # PART 0 : Overview
 # ------------------------------
-transfer_history, player_history = get_data()
+transfer_history, player_history, squad_and_performance, squad_history = get_data()
 
 
 st.write(
@@ -133,9 +134,18 @@ input into the model. The model will output a score and at the end the top 10 pl
 )
 
 # ------------------------------
-# PART 1 : Filter Data
+# PART 1 : Processing User Input
 # ------------------------------
 
+# parse out the list of teams in top_players_per_squad
+team_list = squad_history['club_code'].unique().tolist()
+
+
+# Add a selectbox to the sidebar:
+add_selectbox = st.sidebar.selectbox(
+    'Choose a team:',
+    (team_list)
+)
 
 
 
