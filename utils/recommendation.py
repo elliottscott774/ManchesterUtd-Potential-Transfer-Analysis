@@ -4,10 +4,10 @@ from utils.model import train_model, predict
 import time
 import streamlit as st
 
-def get_recommendation(squad_and_performance, squad_history, selected_team, targets, season):
+def get_recommendation(squad_and_performance, squad_history, selected_team, targets, season, age_range):
     
     selected_squad = squad_history[(squad_history['club_code'] == selected_team) & (squad_history['season'] == season)]
-    available_players = squad_history[(squad_history['club_code'] != selected_team) & (squad_history['season'] == season)]
+    available_players = squad_history[(squad_history['club_code'] != selected_team) & (squad_history['season'] == season) & (squad_history['age'] >= age_range[0]) & (squad_history['age'] <= age_range[1])]
     player_predictions = {}  # Initialize an empty dictionary to store predictions
     
     
@@ -115,17 +115,14 @@ def get_recommendation(squad_and_performance, squad_history, selected_team, targ
         if not isinstance(model_targets, list):
             model_targets = [model_targets]
 
-        # Assuming player_predictions is a dict with player IDs as keys and dicts of model targets and predictions as values
         for player_id, predictions in player_predictions.items():
             for target, prediction in predictions.items():
                 # Ensure the prediction is a scalar numeric value
-                # This is a simplistic approach; you might need to adjust based on your actual data structure
                 if isinstance(prediction, np.ndarray) and prediction.size == 1:
                     player_predictions[player_id][target] = prediction.item()  # Convert single-element array to scalar
                 elif isinstance(prediction, list) and len(prediction) == 1:
                     player_predictions[player_id][target] = prediction[0]  # Convert single-element list to scalar
-                # Add more conditions as necessary based on the data types you encounter
-
+               
         # Now, when you create the DataFrame, the data should be in a suitable format for numeric operations
         predictions_df = pd.DataFrame.from_dict(player_predictions, orient='index')
 
@@ -146,13 +143,7 @@ def get_recommendation(squad_and_performance, squad_history, selected_team, targ
             if category in model_targets:
                 rankings[category] = rankings[category].rank(method='min', ascending=False)
 
-        # Apply weighting based on the standard deviation within each category to emphasize exceptional performances
-        for category in model_targets:
-            category_std = predictions_df[category].std()
-            if category_std > 0:  # Avoid division by zero
-                # Weight by the inverse of standard deviation; lower std means higher weight for exceptional performance
-                rankings[category] *= (1 / category_std)
-
+        
         # Initialize a dictionary to store top 5 players in each category including overall
         top_players = {}
 

@@ -52,83 +52,11 @@ st.write(
 '''
 # Transfer Recommendation System
 \n\n
-Fans of football debate endlessly on which player(s) their favorite football club should bring to their team. The goal of this system is to 
-recommend potential players based on how they are likely to improve the club.
+Football fans love discussing which players their favorite clubs should sign.
+ The purpose of this system is to suggest players who are likely to enhance the team's performance.
 \n\n
-Through careful data processing I was able to create a player history data set, which tracks the performance of each player over the years, and a transfer history data set, 
-which tracks the transfers of each player over the years.
-\n\n
-## Player History
-''')
-
-
-st.write(
-'''
-\n\n 
-A model is trained to predict the success of a squad. 
-Every squad from 2013-2022 is compiled and their performances 
-are aggregated to give a performance score. The model is then 
-trained to predict the performance score of the 
-squad. This trained model can then be used to 
-estimate the success of any squad of players. 
-\n\n
-A transfer recommender system is built using this model. The 
-user can input the name of a team and the system will return 
-the top 10 players with the highest score from the model. 
-Multiple models can be trained based on desired performance
-metrics. For example a model could be trained to recommend 
-players that are most likely to improve the team's overall performance, 
-or a model could be trained to recommend players that are 
-most likely to improve the team's attacking performance. 
-Multiple models could be built and polled to give a more 
-nuanced recommendation.
-\n\n
-## Issues
-I am behind in the model building process. A lot of effort 
-was been spent processing the data to be in a format that 
-can be used to train the model. I have a way of constructing
-all team squads and constructing player transfer history.
-\n\n
-I haven't figured out a good way to build a model based on 
-squads however. A squad of players can vary in the 
-number of players and the model needs to be able to handle 
-that. I could simplify the data by using only the top 5 players
-in each position based on appearances. This would make every
-squad the same size, but would be less realistic.
-\n\n
-I also need to figure out a way of scoring the performance of a
-team based on multiple statistics. How do I know which team is best?
-
-## Next Steps
-''')
-st.image('Transfer_Recommender.png')
-
-st.write(
-'''
-The above images are my plans for how I will train the squad
-success prediction model and construct the recommendation system.
-\n\n
-For each season I will aggregate the players for each team.
-\n\n
-Every team will have performance data related to them that I will use to 
-calculate the success of squad. The performance data is data such as 
-games won, games drawn, game lost, goals for, goals against, number of assists,
-clean sheets, and final league position. The squad's success value becomes
-the target value of the prediction model of which the input of is a squad of players
-\n\n
-The recommendation system will be built using the trained model. The user of the app
-selects a team they want player transfer recommendations for. The system constructs this
-squad of players and iteratively adds a player to the squad. This new squad becomes the 
-input into the model. The model will output a score and at the end the top 10 players with
- the highest score will be returned to the user.
-   
-
-
-
-
 '''
 )
-
 # ------------------------------
 # PART 1 : Processing User Input
 # ------------------------------
@@ -137,15 +65,15 @@ input into the model. The model will output a score and at the end the top 10 pl
 team_list = squad_history['club_code'].unique().tolist()
 
 
-left_column, middle_column, right_column = st.columns(3)
+LL, ML, MR, RR = st.columns(4)
 
-with left_column:
+with LL:
     selected_team = st.selectbox(label = 'Choose a team:',
     options =(team_list),
     index = 179
     )
 
-with middle_column:
+with ML:
     selected_target = st.multiselect(label = 'What do you want to improve?',
                                      options = ['wins', 'draws', 'loss', 'goals_scored',
        'goals_conceded', 'clean_sheets', 'points', 'total_games', 'win_rate',
@@ -155,11 +83,18 @@ with middle_column:
                                      )
 
 
-with right_column:
+with MR:
     selected_season = st.slider(label = 'Choose a season: ', min_value = 2012, max_value = 2023, value = 2023, step = 1)
 
 
-top_players = get_recommendation(squad_and_performance, squad_history, selected_team, selected_target, selected_season)
+with RR:
+    selected_age_range = st.slider(label ="Age range of Recommendations:",
+    value=(16, 35),
+    max_value = 40,
+    min_value = 16)
+
+
+top_players = get_recommendation(squad_and_performance, squad_history, selected_team, selected_target, selected_season, selected_age_range)
 
 # Convert player_ids in top_players to player_names using squad_history, ensuring each player is only counted once
 for category, player_ids in top_players.items():
