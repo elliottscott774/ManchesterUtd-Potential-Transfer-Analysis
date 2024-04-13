@@ -9,6 +9,7 @@ import altair as alt
 from dotenv import load_dotenv
 
 from utils.b2 import B2
+from utils.recommendation import get_recommendation
 
 # ------------------------------------------------------
 #                      APP CONSTANTS
@@ -33,11 +34,9 @@ b2 = B2(endpoint=os.environ['B2_ENDPOINT'],
 @st.cache_data
 def get_data():
     b2.set_bucket(os.environ['B2_BUCKETNAME'])
-    transfer_history = b2.get_df('player_transfer_history.csv')
-    player_history = b2.get_df('player_history.csv')
     squad_and_performance = b2.get_df('squad_and_performance.csv')
     squad_history = b2.get_df('squad_history.csv')
-    return transfer_history, player_history, squad_and_performance, squad_history
+    return squad_and_performance, squad_history
 
 
 # ------------------------------------------------------
@@ -46,7 +45,7 @@ def get_data():
 # ------------------------------
 # PART 0 : Overview
 # ------------------------------
-transfer_history, player_history, squad_and_performance, squad_history = get_data()
+squad_and_performance, squad_history = get_data()
 
 
 st.write(
@@ -62,9 +61,6 @@ which tracks the transfers of each player over the years.
 ## Player History
 ''')
 
-st.dataframe(player_history)
-st.write('\n\n# Transfer History ')
-st.dataframe(transfer_history)
 
 st.write(
 '''
@@ -141,16 +137,39 @@ input into the model. The model will output a score and at the end the top 10 pl
 team_list = squad_history['club_code'].unique().tolist()
 
 
-# Add a selectbox to the sidebar:
-add_selectbox = st.sidebar.selectbox(
-    'Choose a team:',
-    (team_list)
-)
+left_column, middle_column, right_column = st.columns(3)
+
+with left_column:
+    selected_team = st.selectbox(label = 'Choose a team:',
+    options =(team_list),
+    index = 179
+    )
+
+with middle_column:
+    selected_target = st.multiselect(label = 'What do you want to improve?',
+                                     options = ['wins', 'draws', 'loss', 'goals_scored',
+       'goals_conceded', 'clean_sheets', 'points', 'total_games', 'win_rate',
+       'loss_rate', 'goal_difference', 'avg_goals_scored_per_game',
+       'avg_goals_conceded_per_game', 'clean_sheet_rate',
+       'goals_scored_per_win', 'goals_conceded_per_loss']
+                                     )
 
 
+with right_column:
+    selected_season = st.slider(label = 'Choose a season: ', min_value = 2012, max_value = 2023, value = 2023, step = 1)
 
 
+top_players = get_recommendation(squad_and_performance, squad_history, selected_team, selected_target, selected_season)
 
+# Convert player_ids in top_players to player_names using squad_history, ensuring each player is only counted once
+for category, player_ids in top_players.items():
+    unique_player_names = squad_history.drop_duplicates(subset=['player_id']).loc[squad_history['player_id'].isin(player_ids)]['player_name'].tolist()
+    top_players[category] = unique_player_names
+
+# Making the output more reader-friendly
+st.write("Top Players in Each Category:")
+for category, player_names in top_players.items():
+    st.write(f"{category.capitalize()}: {', '.join(map(str, player_names))}")
 
 # ------------------------------
 # PART 2 : Plot
