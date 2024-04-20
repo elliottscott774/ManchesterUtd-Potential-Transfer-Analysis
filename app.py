@@ -1,19 +1,12 @@
 import os
-import pickle
 import pandas as pd
-import sklearn
 import numpy as np
 
 import streamlit as st
-import altair as alt
 from dotenv import load_dotenv
 
 from utils.b2 import B2
 from utils.recommendation import get_recommendation
-
-# ------------------------------------------------------
-#                      APP CONSTANTS
-# ------------------------------------------------------
 
 
 # ------------------------------------------------------
@@ -43,10 +36,14 @@ def get_data():
 #                         APP
 # ------------------------------------------------------
 # ------------------------------
-# PART 0 : Overview
+# PART 0 : Getting Data
 # ------------------------------
 squad_and_performance, squad_history = get_data()
 
+
+# ------------------------------
+# Processing User Input
+# ------------------------------
 
 st.write(
 '''
@@ -57,9 +54,7 @@ Football fans love discussing which players their favorite clubs should sign.
 \n\n
 '''
 )
-# ------------------------------
-# PART 1 : Processing User Input
-# ------------------------------
+
 
 # parse out the list of teams in top_players_per_squad
 team_list = squad_history['club_code'].unique().tolist()
@@ -94,6 +89,10 @@ with RR:
     min_value = 16)
 
 
+# ------------------------------
+# Get Recommendations
+# ------------------------------
+
 top_players = get_recommendation(squad_and_performance, squad_history, selected_team, selected_target, selected_season, selected_age_range)
 
 # Convert player_ids in top_players to player_names using squad_history, ensuring each player is only counted once
@@ -106,6 +105,3 @@ st.write("Top Players in Each Category:")
 for category, player_names in top_players.items():
     st.write(f"{category.capitalize()}: {', '.join(map(str, player_names))}")
 
-# ------------------------------
-# PART 2 : Plot
-# ------------------------------
