@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 from utils.model import train_model, predict
-import time
 import streamlit as st
 
 def get_recommendation(squad_and_performance, squad_history, selected_team, targets, season, age_range):

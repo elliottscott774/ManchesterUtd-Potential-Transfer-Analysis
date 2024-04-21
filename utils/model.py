@@ -1,7 +1,4 @@
-import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.linear_model import LinearRegression
 
 
 def train_model(target, squad_and_performance):
