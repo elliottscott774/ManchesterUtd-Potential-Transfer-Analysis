@@ -56,7 +56,7 @@ To begin, choose the following properties to receive recommendations:
 1. A team\n\n
 2. One or many metrics to improve\n\n
 3. A season\n\n
-4. An age range of players\n\n
+4. Age range of recommendations\n\n
 
 Each metric will return a list of 5 players. The overall category are 5 players who have the best combined rank in all metrics.
 '''
