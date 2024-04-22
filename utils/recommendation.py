@@ -9,8 +9,36 @@ def get_recommendation(squad_and_performance, squad_history, selected_team, targ
     available_players = squad_history[(squad_history['club_code'] != selected_team) & (squad_history['season'] == season) & (squad_history['age'] >= age_range[0]) & (squad_history['age'] <= age_range[1])]
     player_predictions = {}  # Initialize an empty dictionary to store predictions
     
-    
-    def replace_player_with_lowest_minutes(selected_squad, new_player, squad_history, season):
+    latest_iteration = st.empty()
+    progress_text = "Finding the best players. Please wait."
+    bar = st.progress(0, text = progress_text)
+
+    # Calculate the total number of iterations
+    total_iterations = len(targets) * len(available_players)
+    current_iteration = 0  # Initialize a counter to track the current iteration
+
+    for target in targets:
+        print('Modeling: ', target)
+        model = train_model([target], squad_and_performance)  # Train model for the current target
+        for player in available_players.itertuples():  # Iterate through available players
+            new_squad = replace_player_with_lowest_minutes(selected_squad, player.player_id, squad_history, season)
+            processed_squad = process_squad(new_squad)
+            prediction = predict(model, processed_squad)
+            # Initialize a sub-dictionary for the player if it doesn't exist
+            if player.player_id not in player_predictions:
+                player_predictions[player.player_id] = {}
+            # Store the prediction for the current target
+            player_predictions[player.player_id][target] = prediction
+            
+            # Update the current iteration and calculate progress
+            current_iteration += 1
+            progress = int((current_iteration / total_iterations) * 100)
+            bar.progress(progress, text = progress_text)
+
+    top_players = find_top_players_in_categories(player_predictions, targets)       
+    return top_players 
+
+def replace_player_with_lowest_minutes(selected_squad, new_player, squad_history, season):
             
             """
             Replaces a player in the selected squad with a new player from the squad history,
@@ -61,7 +89,8 @@ def get_recommendation(squad_and_performance, squad_history, selected_team, targ
 
             return selected_squad
 
-    def process_squad(squad):
+
+def process_squad(squad):
         # Define a custom order for positions
         position_order = {'Attack': 1, 'Midfield': 2, 'Defender': 3, 'Goalkeeper': 4}
 
@@ -97,7 +126,8 @@ def get_recommendation(squad_and_performance, squad_history, selected_team, targ
 
         return(final_squad_df)
 
-    def find_top_players_in_categories(player_predictions, model_targets):
+
+def find_top_players_in_categories(player_predictions, model_targets):
         """
         Finds the top 5 players in each category specified in target
         and the top 5 players overall based on the weighted sum of their ranks across all specified categories.
@@ -155,34 +185,3 @@ def get_recommendation(squad_and_performance, squad_history, selected_team, targ
         top_players['overall'] = rankings['overall'].nlargest(5).index.tolist()
 
         return top_players
-
-    
-    latest_iteration = st.empty()
-    progress_text = "Finding the best players. Please wait."
-    bar = st.progress(0, text = progress_text)
-
-    # Calculate the total number of iterations
-    total_iterations = len(targets) * len(available_players)
-    current_iteration = 0  # Initialize a counter to track the current iteration
-
-    for target in targets:
-        print('Modeling: ', target)
-        model = train_model([target], squad_and_performance)  # Train model for the current target
-        for player in available_players.itertuples():  # Iterate through available players
-            new_squad = replace_player_with_lowest_minutes(selected_squad, player.player_id, squad_history, season)
-            processed_squad = process_squad(new_squad)
-            prediction = predict(model, processed_squad)
-            # Initialize a sub-dictionary for the player if it doesn't exist
-            if player.player_id not in player_predictions:
-                player_predictions[player.player_id] = {}
-            # Store the prediction for the current target
-            player_predictions[player.player_id][target] = prediction
-            
-            # Update the current iteration and calculate progress
-            current_iteration += 1
-            progress = int((current_iteration / total_iterations) * 100)
-            bar.progress(progress)
-
-    top_players = find_top_players_in_categories(player_predictions, targets)       
-    return top_players 
-
