@@ -111,11 +111,12 @@ for category, player_ids in top_players.items():
     i = 0
     for player_id in player_ids:
         player_name = unique_player_names[i]
-        i += 1
         try:
             st.page_link("https://www.transfermarkt.com/%s/profil/spieler/%s" % (player_name.replace(" ", "-"), player_id), label="%s Transfermarkt" % player_name, icon = "🌎")
         except:
             st.write("https://www.transfermarkt.com/%s/profil/spieler/%s" % (player_name.replace(" ", "-"), player_id))
+
+        i += 1
 
         
 
