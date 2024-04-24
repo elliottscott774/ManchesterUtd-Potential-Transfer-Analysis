@@ -112,5 +112,10 @@ for category, player_ids in top_players.items():
     for player_id in player_ids:
         player_name = unique_player_names[i]
         i += 1
-        st.page_link("https://www.transfermarkt.com/%s/profil/spieler/%s" % (player_name, player_id), label="%s Transfermarkt" % player_name)
+        try:
+            st.page_link("https://www.transfermarkt.com/%s/profil/spieler/%s" % (player_name, player_id), label="%s Transfermarkt" % player_name)
+        except:
+            st.write("Unable to find Transfermarkt link for %s" % player_name)
+
+        
 
