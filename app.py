@@ -58,7 +58,8 @@ To begin, choose the following properties to receive recommendations:
 3. A season\n\n
 4. Age range of recommendations\n\n
 
-Each metric will return a list of 5 players. The overall category are 5 players who have the best combined rank in all metrics.
+Each metric will return a list of 5 players. The overall category are 5 players who have the best combined rank in all metrics.\n\n
+Each player will have a link to their Transfermarkt webpage.
 '''
 )
 
@@ -106,9 +107,10 @@ top_players = get_recommendation(squad_and_performance, squad_history, selected_
 for category, player_ids in top_players.items():
     unique_player_names = squad_history.drop_duplicates(subset=['player_id']).loc[squad_history['player_id'].isin(player_ids)]['player_name'].tolist()
     top_players[category] = unique_player_names
-
-# Making the output more reader-friendly
-st.write("Top Players in Each Category:")
-for category, player_names in top_players.items():
-    st.write(f"{category.capitalize()}: {', '.join(map(str, player_names))}")
+    st.write(f"{category.capitalize()}: {', '.join(map(str, unique_player_names))}")
+    i = 0
+    for player_id in player_ids:
+        player_name = unique_player_names[i]
+        i += 1
+        st.page_link("https://www.transfermarkt.com/%s/profil/spieler/%s" % (player_name, player_id), label="%s Transfermarkt" % player_name)
 

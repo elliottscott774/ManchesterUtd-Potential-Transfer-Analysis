@@ -57,7 +57,7 @@ def replace_player_with_lowest_minutes(selected_squad, new_player, squad_history
             # Find the position of the new player for the specified season
             new_player_data = squad_history[(squad_history['player_id'] == new_player) & (squad_history['season'] == season)]
             
-            # If the new player has multiple entries (played for more than one club), select the entry with the most minutes played
+            # If the new player has multiple entries (played for more than one club in a single season), select the entry with the most minutes played
             if len(new_player_data) > 1:
                 new_player_data = new_player_data.loc[new_player_data['minutes_played'].idxmax()]
 
@@ -130,7 +130,7 @@ def process_squad(squad):
 def find_top_players_in_categories(player_predictions, model_targets):
         """
         Finds the top 5 players in each category specified in target
-        and the top 5 players overall based on the weighted sum of their ranks across all specified categories.
+        and the top 5 players overall based on sum of their ranks across all specified categories.
 
         Parameters:
         - player_predictions (dict): A dictionary containing player IDs as keys and dictionaries of model targets and
@@ -152,16 +152,15 @@ def find_top_players_in_categories(player_predictions, model_targets):
                 elif isinstance(prediction, list) and len(prediction) == 1:
                     player_predictions[player_id][target] = prediction[0]  # Convert single-element list to scalar
                
-        # Now, when you create the DataFrame, the data should be in a suitable format for numeric operations
+        # Now, when we create the DataFrame, the data should be in a suitable format for numeric operations
         predictions_df = pd.DataFrame.from_dict(player_predictions, orient='index')
 
         # Ensure all data in predictions_df are of a numeric type
         predictions_df = predictions_df.apply(pd.to_numeric, errors='coerce')
 
-        # Proceed with the rest of the function as before
-
         # Define categories where a lower rank is better
         lower_is_better = ['wins', 'goals_scored', 'clean_sheets', 'points', 'win_rate', 'goal_difference', 'avg_goals_scored_per_game', 'clean_sheet_rate', 'goals_scored_per_win']
+        
         # Define categories where a higher rank is better (i.e., fewer occurrences are better)
         higher_is_better = ['loss', 'goals_conceded', 'draws', 'total_games', 'loss_rate', 'avg_goals_conceded_per_game', 'goals_conceded_per_loss']
 
@@ -180,7 +179,7 @@ def find_top_players_in_categories(player_predictions, model_targets):
         for category in model_targets:
             top_players[category] = rankings[category].nlargest(5).index.tolist()
 
-        # Calculate overall ranking based on the weighted sum of ranks across all specified categories
+        # Calculate overall ranking based on the sum of ranks across all specified categories
         rankings['overall'] = rankings[model_targets].sum(axis=1)
         top_players['overall'] = rankings['overall'].nlargest(5).index.tolist()
 
