@@ -115,7 +115,6 @@ for category, player_ids in top_players.items():
         try:
             st.page_link("https://www.transfermarkt.com/%s/profil/spieler/%s" % (player_name.replace(" ", "-"), player_id), label="%s Transfermarkt" % player_name, icon = "🌎")
         except:
-            st.write("Unable to find Transfermarkt link for %s" % player_name)
             st.write("https://www.transfermarkt.com/%s/profil/spieler/%s" % (player_name.replace(" ", "-"), player_id))
 
         
