@@ -101,22 +101,26 @@ with RR:
 # Get Recommendations
 # ------------------------------
 
-top_players = get_recommendation(squad_and_performance, squad_history, selected_team, selected_target, selected_season, selected_age_range)
+try:
+    top_players = get_recommendation(squad_and_performance, squad_history, selected_team, selected_target, selected_season, selected_age_range)
+    # Convert player_ids in top_players to player_names using squad_history, ensuring each player is only counted once
+    for category, player_ids in top_players.items():
+        unique_player_names = squad_history.drop_duplicates(subset=['player_id']).loc[squad_history['player_id'].isin(player_ids)]['player_name'].tolist()
+        top_players[category] = unique_player_names
+        st.write(f"{category.capitalize()}: {', '.join(map(str, unique_player_names))}")
+        i = 0
+        for player_id in player_ids:
+            player_name = unique_player_names[i]
+            try:
+                st.page_link("https://www.transfermarkt.com/%s/profil/spieler/%s" % (player_name.replace(" ", "-"), player_id), label="%s Transfermarkt" % (player_name), icon = "🌎")
+            except:
+                st.write("https://www.transfermarkt.com/%s/profil/spieler/%s" % (player_name.replace(" ", "-"), player_id))
 
-# Convert player_ids in top_players to player_names using squad_history, ensuring each player is only counted once
-for category, player_ids in top_players.items():
-    unique_player_names = squad_history.drop_duplicates(subset=['player_id']).loc[squad_history['player_id'].isin(player_ids)]['player_name'].tolist()
-    top_players[category] = unique_player_names
-    st.write(f"{category.capitalize()}: {', '.join(map(str, unique_player_names))}")
-    i = 0
-    for player_id in player_ids:
-        player_name = unique_player_names[i]
-        try:
-            st.page_link("https://www.transfermarkt.com/%s/profil/spieler/%s" % (player_name.replace(" ", "-"), player_id), label="%s Transfermarkt" % player_name, icon = "🌎")
-        except:
-            st.write("https://www.transfermarkt.com/%s/profil/spieler/%s" % (player_name.replace(" ", "-"), player_id))
+            i = i+1
 
-        i += 1
+except:
+    st.write("Sorry that team does not meet the model criteria")
+
 
         
 

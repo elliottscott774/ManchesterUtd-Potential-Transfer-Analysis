@@ -24,6 +24,7 @@ def get_recommendation(squad_and_performance, squad_history, selected_team, targ
             new_squad = replace_player_with_lowest_minutes(selected_squad, player.player_id, squad_history, season)
             processed_squad = process_squad(new_squad)
             prediction = predict(model, processed_squad)
+            
             # Initialize a sub-dictionary for the player if it doesn't exist
             if player.player_id not in player_predictions:
                 player_predictions[player.player_id] = {}
