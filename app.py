@@ -1,24 +1,16 @@
-import os
+from pathlib import Path
 import pandas as pd
 import numpy as np
 
 import streamlit as st
-from dotenv import load_dotenv
 
-from utils.b2 import B2
 from utils.recommendation import get_recommendation
 
 
 # ------------------------------------------------------
 #                        CONFIG
 # ------------------------------------------------------
-load_dotenv()
-
-# load Backblaze connection
-# load Backblaze connection
-b2 = B2(endpoint=os.environ['B2_ENDPOINT'],
-        key_id=os.environ['B2_KEYID'],
-        secret_key=os.environ['B2_APPKEY'])
+DATA_DIR = Path(__file__).resolve().parent / 'data'
 
 
 # ------------------------------------------------------
@@ -26,9 +18,8 @@ b2 = B2(endpoint=os.environ['B2_ENDPOINT'],
 # ------------------------------------------------------
 @st.cache_data
 def get_data():
-    b2.set_bucket(os.environ['B2_BUCKETNAME'])
-    squad_and_performance = b2.get_df('squad_and_performance.csv')
-    squad_history = b2.get_df('squad_history.csv')
+    squad_and_performance = pd.read_csv(DATA_DIR / 'squad_and_performance.csv.gz')
+    squad_history = pd.read_csv(DATA_DIR / 'squad_history.csv.gz')
     return squad_and_performance, squad_history
 
 

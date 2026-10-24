@@ -37,3 +37,15 @@ Ethical Concerns:
 
 
 
+
+
+## Running without Backblaze
+
+The app reads its two datasets from the tracked `data/` directory. No storage account, environment variables or API keys are required. The original Streamlit controls and recommendation/model code are retained.
+
+```sh
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+The CSVs were rebuilt from the original processing notebook using Kaggle Transfermarkt snapshot 405 (April 19, 2024), covering seasons 2012–2023. They are historical rebuilt inputs, not verified copies of the lost Backblaze files. See [data provenance](data/PROVENANCE.md).
