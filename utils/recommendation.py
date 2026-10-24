@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from utils.model import train_model, predict
+from utils.preprocessing import encode_leagues
 import streamlit as st
 
 def get_recommendation(squad_and_performance, squad_history, selected_team, targets, season, age_range):
@@ -121,7 +122,7 @@ def process_squad(squad):
         # Merge the squad identifiers with the wide format DataFrame
         final_squad_df = pd.merge(squad_identifiers, squad_wide_format, on='club_id', how='inner')
 
-        final_squad_df['league_code'] = final_squad_df['league'].astype('category').cat.codes
+        final_squad_df['league_code'] = encode_leagues(final_squad_df['league'])
         #drop league column
         final_squad_df = final_squad_df.drop(columns=['league', 'club_id'])
 

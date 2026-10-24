@@ -1,4 +1,5 @@
 from sklearn.tree import DecisionTreeRegressor
+from utils.preprocessing import transform_features
 
 
 def train_model(target, squad_and_performance):
@@ -26,5 +27,5 @@ def train_model(target, squad_and_performance):
 
 
 def predict(model, squad):
-    y_pred = model.predict(squad)
+    y_pred = model.predict(transform_features(squad))
     return y_pred

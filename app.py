@@ -92,28 +92,29 @@ with RR:
 # Get Recommendations
 # ------------------------------
 
-try:
-    top_players = get_recommendation(squad_and_performance, squad_history, selected_team, selected_target, selected_season, selected_age_range)
-    for category, player_ids in top_players.items():
-        # Filter the DataFrame to get rows matching the player IDs
-        filtered_players = squad_history[squad_history['player_id'].isin(player_ids)].drop_duplicates(subset=['player_id'])
+if selected_target:
+    try:
+        top_players = get_recommendation(squad_and_performance, squad_history, selected_team, selected_target, selected_season, selected_age_range)
+        for category, player_ids in top_players.items():
+            # Filter the DataFrame to get rows matching the player IDs
+            filtered_players = squad_history[squad_history['player_id'].isin(player_ids)].drop_duplicates(subset=['player_id'])
         
-        st.write(f"{category.capitalize()}:")
-        for _, row in filtered_players.iterrows():
-            player_name = row['player_name'].replace(" ", "-")
-            player_id = row['player_id']  # Assuming this is the correct Transfermarkt ID
-            transfermarkt_url = f"https://www.transfermarkt.com/{player_name}/profil/spieler/{player_id}"
-            link_label = f"View {row['player_name']}'s profile on Transfermarkt"
+            st.write(f"{category.capitalize()}:")
+            for _, row in filtered_players.iterrows():
+                player_name = row['player_name'].replace(" ", "-")
+                player_id = row['player_id']  # Assuming this is the correct Transfermarkt ID
+                transfermarkt_url = f"https://www.transfermarkt.com/{player_name}/profil/spieler/{player_id}"
+                link_label = f"View {row['player_name']}'s profile on Transfermarkt"
             
-            # Display the link with a label
-            try:
-                st.page_link(transfermarkt_url, label=link_label, icon="🌎")
-            except AttributeError:
-                # If st.page_link is not available, use markdown to create a hyperlink
-                st.markdown(f"[{link_label}]({transfermarkt_url})", unsafe_allow_html=True)
-except Exception as e:
-    st.write("Sorry, that team does not meet the model criteria")
-    st.write(str(e))  # It's helpful to print the exception for debugging purposes.
+                # Display the link with a label
+                try:
+                    st.page_link(transfermarkt_url, label=link_label, icon="🌎")
+                except AttributeError:
+                    # If st.page_link is not available, use markdown to create a hyperlink
+                    st.markdown(f"[{link_label}]({transfermarkt_url})", unsafe_allow_html=True)
+    except Exception as e:
+        st.write("Sorry, that team does not meet the model criteria")
+        st.write(str(e))  # It's helpful to print the exception for debugging purposes.
 
         
 

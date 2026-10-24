@@ -41,7 +41,7 @@ Ethical Concerns:
 
 ## Running without Backblaze
 
-The app reads its two datasets from the tracked `data/` directory. No storage account, environment variables or API keys are required. The original Streamlit controls and recommendation/model code are retained.
+The app reads its two datasets from the tracked `data/` directory. No storage account, environment variables or API keys are required. The original Streamlit controls and DecisionTree training workflow are retained.
 
 ```sh
 pip install -r requirements.txt
@@ -49,3 +49,13 @@ streamlit run app.py
 ```
 
 The CSVs were rebuilt from the original processing notebook using Kaggle Transfermarkt snapshot 405 (April 19, 2024), covering seasons 2012–2023. They are historical rebuilt inputs, not verified copies of the lost Backblaze files. See [data provenance](data/PROVENANCE.md).
+
+## Prediction preprocessing correction
+
+Inference now uses the exact MinMax feature transform and global league mapping fitted by the original processing notebook. This corrects the original training/inference feature mismatch. DecisionTree type, targets, training cohort, controls and interface copy are unchanged. No recommendation work is started until a metric is selected. The saved transformation does not clip values.
+
+```sh
+python -m unittest discover -s tests -v
+```
+
+Regression coverage compares 18 authentic squads across six leagues and the 2012, 2018 and 2023 seasons with their corresponding normalized training rows. This validates preprocessing consistency, not recommendation quality. The original minute-tie ordering behavior remains unchanged.
