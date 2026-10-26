@@ -18,7 +18,8 @@ DATA_DIR = Path(__file__).resolve().parent / 'data'
 #                        CACHING
 # ------------------------------------------------------
 @st.cache_data
-def get_data():
+def get_data(data_file_hashes):
+    """Invalidate cached frames when tracked dataset contents change."""
     squad_and_performance = pd.read_csv(DATA_DIR / 'squad_and_performance.csv.gz')
     squad_history = pd.read_csv(DATA_DIR / 'squad_history.csv.gz')
     return squad_and_performance, squad_history
@@ -30,7 +31,9 @@ def get_data():
 # ------------------------------
 # PART 0 : Getting Data
 # ------------------------------
-squad_and_performance, squad_history = get_data()
+refresh_metadata = json.loads((DATA_DIR / 'dataset-metadata.json').read_text(encoding='utf-8'))
+data_file_hashes = {filename: details['sha256'] for filename, details in refresh_metadata['files'].items()}
+squad_and_performance, squad_history = get_data(data_file_hashes)
 
 
 # ------------------------------
@@ -59,7 +62,6 @@ Each player will have a link to their Transfermarkt webpage.
 # parse out the list of teams in top_players_per_squad
 team_list = squad_history['club_code'].unique().tolist()
 default_team_index = team_list.index('manchester-united') if 'manchester-united' in team_list else 0
-refresh_metadata = json.loads((DATA_DIR / 'dataset-metadata.json').read_text(encoding='utf-8'))
 st.caption(f"Data through {refresh_metadata['games_through']} · Refreshed {refresh_metadata['refreshed_on']}")
 
 

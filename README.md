@@ -14,7 +14,7 @@ streamlit run app.py
 python -m unittest discover -s tests -v
 ```
 
-Data is stored in `data/`; no Backblaze account, credentials, or API keys are required. The season selector uses the seasons actually available for the chosen club.
+Data is stored in `data/`; no Backblaze account, credentials, or API keys are required. The season selector uses the seasons actually available for the chosen club. Cached CSVs are keyed by their content hashes, and fitted preprocessing is reread when used, so data-only deployments cannot retain old data or feature units.
 
 ## Rebuild the data
 
@@ -30,4 +30,4 @@ The script executes the original `process_data.ipynb` output-producing cells and
 
 Each squad contains 5 attackers, 6 midfielders, 7 defenders, and 1 goalkeeper. The original 40 features, targets, substitution rules, ranking, and chronological 80% training split are retained. A tree is fitted when recommendations are requested. Inference applies the saved MinMax transformation and global league mapping from the same pipeline run.
 
-Tests compare 18 authentic squads across six leagues and seasons 2012, 2018, and 2025 with their normalized training rows. This checks preprocessing and integration, not predictive quality. The original equal-minute ordering behavior is documented in the fixtures. Recommendations are exploratory shortlists for further scouting, not a substitute for evaluating players as people and athletes.
+Tests compare 18 authentic squads across six leagues and seasons 2012, 2018, and 2025 with their normalized training rows. This checks preprocessing and integration, not predictive quality. Additional regression tests replace data and preprocessing in a warm process and verify that the new versions take effect. The original equal-minute ordering behavior is documented in the fixtures. Recommendations are exploratory shortlists for further scouting, not a substitute for evaluating players as people and athletes.

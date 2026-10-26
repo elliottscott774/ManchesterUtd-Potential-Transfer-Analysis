@@ -1,12 +1,10 @@
 """Use the feature preprocessing fitted by the original data pipeline."""
-from functools import lru_cache
 import json
 from pathlib import Path
 
 import pandas as pd
 
 
-@lru_cache(maxsize=1)
 def training_preprocessing():
     path = Path(__file__).resolve().parents[1] / 'data' / 'feature-preprocessing.json'
     return json.loads(path.read_text(encoding='utf-8'))
