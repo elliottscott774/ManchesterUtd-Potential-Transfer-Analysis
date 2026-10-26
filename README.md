@@ -1,61 +1,33 @@
-Overview:
-- Link to App: https://transfer-recommendation-system.streamlit.app/
-- The purpose of the app was to create a transfer recommendation system for football clubs.
-  Through the app, a club can select the areas of performance they want to improve via a transfer,
-  and using a decision tree model, the app recommends several players that fit the needs of the club.
-  Football fans and potentially football clubs might find the app useful for creating short lists of players to futher scout,
-  as well as understand the profile of player that your favorite team is lacking.
+# Transfer Recommendation System
 
-Data Description:
-- The data used for training in this project comes from: https://www.kaggle.com/datasets/davidcariboo/player-scores.
-- Multiple functions were necessary to format the data. Team performance and player data were extracted and formed into squads, which is a team given a specific season.
+[Open the app](https://transfer-recommendation-system.streamlit.app/)
 
+Choose a club, season, player age range, and the team performance metrics to improve. The app tests player substitutions with the original DecisionTreeRegressor and returns five players per metric, plus an overall list, linked to Transfermarkt.
 
-Algorithm Description:
-- To train the decision tree model, a dataset of teams needed to constructed. Each team represents a club and a season that the team competed in.
-- Each team has some performance level, such as wins, loss, clean sheets, ect, which can be used as a target variable for a model.
-- The decision tree model is trained by taking a team of player data as input and predicts the value of some performance metric.
-- Using the trained model, a recommendation system can be built by transfering players into some squad of players and testing if the performance metric improved.
-- The model returns the top 5 players which improved the performance metric the most.
-![Transfer_Recommender](https://github.com/elliottscott774/ManchesterUtd-Potential-Transfer-Analysis/assets/123982857/4e89ee50-4903-40ea-9807-61c6921e8eb5)
+The bundled data was refreshed on October 25, 2026 from [Transfermarkt dataset version 679](https://www.kaggle.com/datasets/davidcariboo/player-scores/versions/679). It contains 474 clubs and 3,147 eligible squads across season starting years 2012–2025. The upstream dataset is paused: games end July 6, 2026; appearances June 28; valuations June 12. It does not cover 2026–27 squads.
 
-
-Tools Used: 
-- Streamlit for hosting app
-- BackBlaze for hosting data
-- Boto3
-- Pandas
-- Numpy
-- Sklearn
-
-Ethical Concerns: 
-- A football team and a football transfer involves real humans that should not be simplified down via an algorithm.
-  This model is a simplification of what is really happening, and should be treated as such.
-- The data used for training the model comes from seasons 2012 - early 2023. Using the model far beyond in time to this period will result
-   in recommendations with little sense.
-- Some combinations of team and season will result in the model failing. This is because the model mandates a certain number of players in each position and these teams fail to meet this condition. 
-
-
-
-
-
-## Running without Backblaze
-
-The app reads its two datasets from the tracked `data/` directory. No storage account, environment variables or API keys are required. The original Streamlit controls and DecisionTree training workflow are retained.
+## Run
 
 ```sh
 pip install -r requirements.txt
 streamlit run app.py
-```
-
-The CSVs were rebuilt from the original processing notebook using Kaggle Transfermarkt snapshot 405 (April 19, 2024), covering seasons 2012–2023. They are historical rebuilt inputs, not verified copies of the lost Backblaze files. See [data provenance](data/PROVENANCE.md).
-
-## Prediction preprocessing correction
-
-Inference now uses the exact MinMax feature transform and global league mapping fitted by the original processing notebook. This corrects the original training/inference feature mismatch. DecisionTree type, targets, training cohort, controls and interface copy are unchanged. No recommendation work is started until a metric is selected. The saved transformation does not clip values.
-
-```sh
 python -m unittest discover -s tests -v
 ```
 
-Regression coverage compares 18 authentic squads across six leagues and the 2012, 2018 and 2023 seasons with their corresponding normalized training rows. This validates preprocessing consistency, not recommendation quality. The original minute-tie ordering behavior remains unchanged.
+Data is stored in `data/`; no Backblaze account, credentials, or API keys are required. The season selector uses the seasons actually available for the chosen club.
+
+## Rebuild the data
+
+Download and extract the six input CSVs listed in `scripts/rebuild_data.py` from the pinned source snapshot. Run from the repository root, using a separate output directory:
+
+```sh
+python scripts/rebuild_data.py --raw-directory path/to/raw-v679 --output-directory path/to/rebuild --source-provenance data/source-provenance.json
+```
+
+The script executes the original `process_data.ipynb` output-producing cells and records input hashes, output hashes, fitted feature preprocessing, and authentic regression fixtures. Rebuild both datasets and preprocessing together. App CSVs use lossless gzip compression; see [data provenance](data/PROVENANCE.md) and [the run report](data/rebuild-report.json) for this refresh.
+
+## Model and limits
+
+Each squad contains 5 attackers, 6 midfielders, 7 defenders, and 1 goalkeeper. The original 40 features, targets, substitution rules, ranking, and chronological 80% training split are retained. A tree is fitted when recommendations are requested. Inference applies the saved MinMax transformation and global league mapping from the same pipeline run.
+
+Tests compare 18 authentic squads across six leagues and seasons 2012, 2018, and 2025 with their normalized training rows. This checks preprocessing and integration, not predictive quality. The original equal-minute ordering behavior is documented in the fixtures. Recommendations are exploratory shortlists for further scouting, not a substitute for evaluating players as people and athletes.

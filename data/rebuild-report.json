@@ -1,0 +1,327 @@
+{
+  "runtime": {
+    "python": "3.12.14",
+    "pandas": "2.1.3",
+    "numpy": "1.26.4",
+    "scikit-learn": "1.4.1.post1"
+  },
+  "source_notebook_sha256": "39e3441f38535c74871181d2989b20ea91082f5c0c5565392b43be2174036e94",
+  "source_provenance": {
+    "dataset": "davidcariboo/player-scores",
+    "source_url": "https://www.kaggle.com/api/v1/datasets/download/davidcariboo/player-scores?datasetVersionNumber=679",
+    "version": 679,
+    "published": "2026-09-05T09:16:22.72Z",
+    "downloaded": "2026-10-25",
+    "zip_bytes": 245743828,
+    "zip_sha256": "5971ec002b9d7b3e99358ed28b0518e7f384549db53075efc273cc57f7dacdf1",
+    "upstream_status": "Updates paused; games through 2026-07-06, appearances through 2026-06-28, valuations through 2026-06-12; 2026/27 squads not covered.",
+    "members": [
+      {
+        "name": "appearances.csv",
+        "bytes": 198398405
+      },
+      {
+        "name": "club_games.csv",
+        "bytes": 14748080
+      },
+      {
+        "name": "clubs.csv",
+        "bytes": 208374
+      },
+      {
+        "name": "competitions.csv",
+        "bytes": 12247
+      },
+      {
+        "name": "countries.csv",
+        "bytes": 15058
+      },
+      {
+        "name": "game_events.csv",
+        "bytes": 179098694
+      },
+      {
+        "name": "game_lineups.csv",
+        "bytes": 415978884
+      },
+      {
+        "name": "games.csv",
+        "bytes": 28965132
+      },
+      {
+        "name": "national_teams.csv",
+        "bytes": 32980
+      },
+      {
+        "name": "player_valuations.csv",
+        "bytes": 39647280
+      },
+      {
+        "name": "players.csv",
+        "bytes": 19624138
+      },
+      {
+        "name": "transfers.csv",
+        "bytes": 18112063
+      }
+    ]
+  },
+  "raw_snapshot_version": 679,
+  "raw_snapshot_published": "2026-09-05T09:16:22.72Z",
+  "raw_files": [
+    {
+      "file": "appearances.csv",
+      "bytes": 198398405,
+      "sha256": "c4ba5327f9005e4a9914c0f78c3b07132ef2cf1a4babda379bbf54ffd207ebec"
+    },
+    {
+      "file": "clubs.csv",
+      "bytes": 208374,
+      "sha256": "26dc6113d8206246145add2c7a318a657b3995fccdb0c9004d65ca6ae5e5968b"
+    },
+    {
+      "file": "games.csv",
+      "bytes": 28965132,
+      "sha256": "c24da068cc7444e1e345c274d8d2320226cafc02186a17de2cf766eccb8ae79b"
+    },
+    {
+      "file": "players.csv",
+      "bytes": 19624138,
+      "sha256": "b94216cf2ff8777b5eddd4fd91402c19e757b366fbdeb4f4437580c302ff2d66"
+    },
+    {
+      "file": "player_valuations.csv",
+      "bytes": 39647280,
+      "sha256": "9caf4ff707905f71463a04253c5ac640b3ff9575e07912fd7c50365697efa47d"
+    },
+    {
+      "file": "competitions.csv",
+      "bytes": 12247,
+      "sha256": "fadaf2992e01f8450d8d419006b0f533bbd6742163f4a0c5ee6a157fae7b791e"
+    }
+  ],
+  "raw_audit": {
+    "games": 88958,
+    "appearances": 1894350,
+    "valuations": 656301,
+    "clubs": 796,
+    "minimum_game_season": 2005,
+    "maximum_game_season": 2025,
+    "latest_game_date": "2026-07-06",
+    "latest_appearance_date": "2026-06-28",
+    "latest_valuation_date": "2026-06-12",
+    "duplicate_valuation_keys": 0,
+    "national_team_games": 742,
+    "national_team_appearances": 3027,
+    "national_team_club_id_overlap": [],
+    "appearances_without_matching_club": 11062,
+    "national_team_handling": "Original left club merge and groupby exclude unmatched national-team rows; output club IDs are checked."
+  },
+  "shuffle_seed": 20261024,
+  "notes": [
+    "Original output-producing notebook cells executed, with unused game-lineup and transfer-history reads omitted.",
+    "Original 5 Attack / 6 Midfield / 7 Defender / 1 Goalkeeper criteria, feature transform, targets and output schemas retained.",
+    "Original unseeded shuffle is seeded for reproducibility; exact-minute tie behavior is documented in fixture ordering audit.",
+    "Valuation backward-asof optimization validated against original lookup; duplicate player/date keys use original fallback."
+  ],
+  "timings": [
+    {
+      "cell": 1,
+      "seconds": 0.906
+    },
+    {
+      "cell": 13,
+      "seconds": 2.188
+    },
+    {
+      "cell": 17,
+      "seconds": 0.0
+    },
+    {
+      "cell": 18,
+      "seconds": 49.39
+    },
+    {
+      "cell": 21,
+      "seconds": 1.563
+    },
+    {
+      "cell": 22,
+      "seconds": 0.328
+    },
+    {
+      "cell": 24,
+      "seconds": 0.016
+    },
+    {
+      "cell": 26,
+      "seconds": 0.015
+    },
+    {
+      "cell": 27,
+      "seconds": 0.0
+    },
+    {
+      "cell": 29,
+      "seconds": 0.016
+    },
+    {
+      "cell": 32,
+      "seconds": 0.109
+    },
+    {
+      "cell": 34,
+      "seconds": 0.406
+    },
+    {
+      "cell": 35,
+      "seconds": 0.141
+    },
+    {
+      "cell": 37,
+      "seconds": 0.078
+    },
+    {
+      "cell": 39,
+      "seconds": 0.016
+    },
+    {
+      "cell": 43,
+      "seconds": 0.078
+    },
+    {
+      "cell": 44,
+      "seconds": 15.406
+    },
+    {
+      "cell": 48,
+      "seconds": 0.281
+    },
+    {
+      "cell": 51,
+      "seconds": 0.063
+    },
+    {
+      "cell": 52,
+      "seconds": 0.078
+    },
+    {
+      "cell": 53,
+      "seconds": 11.906
+    },
+    {
+      "cell": 54,
+      "seconds": 0.0
+    },
+    {
+      "cell": 55,
+      "seconds": 0.157
+    }
+  ],
+  "outputs": [
+    {
+      "file": "squad_history.csv",
+      "rows": 59793,
+      "columns": [
+        "Unnamed: 0",
+        "player_id",
+        "player_name",
+        "season",
+        "club_code",
+        "club_id",
+        "goals",
+        "games",
+        "assists",
+        "minutes_played",
+        "goals_for",
+        "goals_against",
+        "clean_sheet",
+        "season_end_valuation",
+        "position",
+        "sub_position",
+        "league",
+        "age",
+        "squad_id"
+      ],
+      "sha256": "88bc3bbf7836b32af96728742618927009214f814373ba3c15304f0a9b21f316",
+      "bytes": 7410063
+    },
+    {
+      "file": "squad_and_performance.csv",
+      "rows": 3116,
+      "columns": [
+        "Unnamed: 0",
+        "squad_id",
+        "season",
+        "club_id",
+        "player_id_1",
+        "player_id_2",
+        "player_id_3",
+        "player_id_4",
+        "player_id_5",
+        "player_id_6",
+        "player_id_7",
+        "player_id_8",
+        "player_id_9",
+        "player_id_10",
+        "player_id_11",
+        "player_id_12",
+        "player_id_13",
+        "player_id_14",
+        "player_id_15",
+        "player_id_16",
+        "player_id_17",
+        "player_id_18",
+        "player_id_19",
+        "age_1",
+        "age_2",
+        "age_3",
+        "age_4",
+        "age_5",
+        "age_6",
+        "age_7",
+        "age_8",
+        "age_9",
+        "age_10",
+        "age_11",
+        "age_12",
+        "age_13",
+        "age_14",
+        "age_15",
+        "age_16",
+        "age_17",
+        "age_18",
+        "age_19",
+        "league_code",
+        "wins",
+        "draws",
+        "loss",
+        "goals_scored",
+        "goals_conceded",
+        "clean_sheets",
+        "points",
+        "total_games",
+        "win_rate",
+        "loss_rate",
+        "goal_difference",
+        "avg_goals_scored_per_game",
+        "avg_goals_conceded_per_game",
+        "clean_sheet_rate",
+        "goals_scored_per_win",
+        "goals_conceded_per_loss"
+      ],
+      "sha256": "22eb4c48045ed73a280a32372e637bc02959c5d034e7a58e499a9d344420a410",
+      "bytes": 2866513
+    }
+  ],
+  "output_validation": {
+    "history_squads": 3147,
+    "clubs": 474,
+    "minimum_season": 2012,
+    "maximum_season": 2025,
+    "all_squads_have_19_players": true,
+    "all_output_club_ids_in_raw_clubs": true,
+    "training_has_no_missing_values": true,
+    "fixture_cases": 18
+  }
+}

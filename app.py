@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import pandas as pd
 import numpy as np
 
@@ -57,6 +58,9 @@ Each player will have a link to their Transfermarkt webpage.
 
 # parse out the list of teams in top_players_per_squad
 team_list = squad_history['club_code'].unique().tolist()
+default_team_index = team_list.index('manchester-united') if 'manchester-united' in team_list else 0
+refresh_metadata = json.loads((DATA_DIR / 'dataset-metadata.json').read_text(encoding='utf-8'))
+st.caption(f"Data through {refresh_metadata['games_through']} · Refreshed {refresh_metadata['refreshed_on']}")
 
 
 LL, ML, MR, RR = st.columns(4)
@@ -64,7 +68,7 @@ LL, ML, MR, RR = st.columns(4)
 with LL:
     selected_team = st.selectbox(label = 'Choose a team:',
     options =(team_list),
-    index = 179
+    index = default_team_index
     )
 
 with ML:
@@ -78,7 +82,8 @@ with ML:
 
 
 with MR:
-    selected_season = st.slider(label = 'Choose a season: ', min_value = 2012, max_value = 2023, value = 2023, step = 1)
+    available_seasons = sorted(squad_history.loc[squad_history['club_code'] == selected_team, 'season'].unique().astype(int).tolist())
+    selected_season = st.select_slider(label = 'Choose a season: ', options = available_seasons, value = available_seasons[-1])
 
 
 with RR:

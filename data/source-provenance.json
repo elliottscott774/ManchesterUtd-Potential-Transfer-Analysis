@@ -1,0 +1,60 @@
+{
+  "dataset": "davidcariboo/player-scores",
+  "source_url": "https://www.kaggle.com/api/v1/datasets/download/davidcariboo/player-scores?datasetVersionNumber=679",
+  "version": 679,
+  "published": "2026-09-05T09:16:22.72Z",
+  "downloaded": "2026-10-25",
+  "zip_bytes": 245743828,
+  "zip_sha256": "5971ec002b9d7b3e99358ed28b0518e7f384549db53075efc273cc57f7dacdf1",
+  "upstream_status": "Updates paused; games through 2026-07-06, appearances through 2026-06-28, valuations through 2026-06-12; 2026/27 squads not covered.",
+  "members": [
+    {
+      "name": "appearances.csv",
+      "bytes": 198398405
+    },
+    {
+      "name": "club_games.csv",
+      "bytes": 14748080
+    },
+    {
+      "name": "clubs.csv",
+      "bytes": 208374
+    },
+    {
+      "name": "competitions.csv",
+      "bytes": 12247
+    },
+    {
+      "name": "countries.csv",
+      "bytes": 15058
+    },
+    {
+      "name": "game_events.csv",
+      "bytes": 179098694
+    },
+    {
+      "name": "game_lineups.csv",
+      "bytes": 415978884
+    },
+    {
+      "name": "games.csv",
+      "bytes": 28965132
+    },
+    {
+      "name": "national_teams.csv",
+      "bytes": 32980
+    },
+    {
+      "name": "player_valuations.csv",
+      "bytes": 39647280
+    },
+    {
+      "name": "players.csv",
+      "bytes": 19624138
+    },
+    {
+      "name": "transfers.csv",
+      "bytes": 18112063
+    }
+  ]
+}

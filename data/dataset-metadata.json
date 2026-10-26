@@ -1,0 +1,33 @@
+{
+  "refreshed_on": "2026-10-25",
+  "source_dataset": "davidcariboo/player-scores",
+  "source_version": 679,
+  "source_published": "2026-09-05T09:16:22.72Z",
+  "source_url": "https://www.kaggle.com/datasets/davidcariboo/player-scores/versions/679",
+  "source_archive_sha256": "5971ec002b9d7b3e99358ed28b0518e7f384549db53075efc273cc57f7dacdf1",
+  "games_through": "2026-07-06",
+  "appearances_through": "2026-06-28",
+  "valuations_through": "2026-06-12",
+  "upstream_status": "Updates paused; games through 2026-07-06, appearances through 2026-06-28, valuations through 2026-06-12; 2026/27 squads not covered.",
+  "seasons": {
+    "min": 2012,
+    "max": 2025
+  },
+  "squads": 3147,
+  "clubs": 474,
+  "training_rows": 3116,
+  "history_rows": 59793,
+  "shuffle_seed": 20261024,
+  "files": {
+    "squad_history.csv.gz": {
+      "bytes": 1619837,
+      "sha256": "ed989ac226cc6ddfef8ac9cecbe662c37a9782de31bc874995980f4da6ea10b6",
+      "csv_sha256": "88bc3bbf7836b32af96728742618927009214f814373ba3c15304f0a9b21f316"
+    },
+    "squad_and_performance.csv.gz": {
+      "bytes": 784478,
+      "sha256": "cfe1b1486e739ff40384bceeb82989bc555db0c19196d8b6e31ae9c2f990c6d3",
+      "csv_sha256": "22eb4c48045ed73a280a32372e637bc02959c5d034e7a58e499a9d344420a410"
+    }
+  }
+}
